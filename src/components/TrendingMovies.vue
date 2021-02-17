@@ -6,7 +6,7 @@
 
     <div class="poster_container">
       <Movies
-        v-for="movie in trending"
+        v-for="movie in movies"
         :key="movie.id"
         :poster="movie.poster_path"
         :id="movie.id"
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { trendingMovies } from "@/services/tmdb";
 import Movies from "@/components/Movies";
 
 export default {
@@ -26,13 +26,18 @@ export default {
     Movies
   },
 
-  /* Vuex test */
-  computed: {
-    ...mapState(["trending"])
+  data() {
+    return {
+      movies: []
+    };
   },
 
   created() {
-    this.$store.dispatch("trendingSection");
+    trendingMovies()
+      .then(({ data }) => {
+        this.movies = data.results;
+      })
+      .catch(error => console.log(error));
   }
 };
 </script>
